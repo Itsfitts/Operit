@@ -124,36 +124,23 @@ class OperitApplication : Application() {
     /** 初始化应用语言设置 */
     private fun initializeAppLanguage() {
         try {
-            // 同步获取已保存的语言设置
-            val languageCode = runBlocking {
-                try {
-                    // 使用更安全的方式检查preferencesManager
-                    val manager = runCatching { preferencesManager }.getOrNull()
-                    if (manager != null) {
-                        manager.appLanguage.first()
-                    } else {
-                        UserPreferencesManager.DEFAULT_LANGUAGE
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "获取语言设置失败", e)
-                    UserPreferencesManager.DEFAULT_LANGUAGE
-                }
-            }
+            // Always use English
+            val languageCode = "en"
 
-            Log.d(TAG, "获取语言设置: $languageCode")
+            Log.d(TAG, "Setting language: $languageCode")
 
-            // 立即应用语言设置
+            // Apply language setting immediately
             val locale = Locale(languageCode)
-            // 设置默认语言
+            // Set default language
             Locale.setDefault(locale)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // Android 13+ 使用AppCompatDelegate API
+                // Android 13+ use AppCompatDelegate API
                 val localeList = LocaleListCompat.create(locale)
                 AppCompatDelegate.setApplicationLocales(localeList)
-                Log.d(TAG, "使用AppCompatDelegate设置语言: $languageCode")
+                Log.d(TAG, "Using AppCompatDelegate to set language: $languageCode")
             } else {
-                // 较旧版本Android - 此处使用的部分更新将在attachBaseContext中完成更完整更新
+                // Older Android versions - partial update here, more complete in attachBaseContext
                 val config = Configuration()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     val localeList = LocaleList(locale)
@@ -164,21 +151,22 @@ class OperitApplication : Application() {
                 }
 
                 resources.updateConfiguration(config, resources.displayMetrics)
-                Log.d(TAG, "使用Configuration设置语言: $languageCode")
+                Log.d(TAG, "Using Configuration to set language: $languageCode")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "初始化语言设置失败", e)
+            Log.e(TAG, "Failed to initialize language settings", e)
         }
     }
 
     override fun attachBaseContext(base: Context) {
-        // 在基础上下文附加前应用语言设置
+        // Apply language settings before attaching base context
         try {
-            val code = LocaleUtils.getCurrentLanguage(base)
+            // Always use English
+            val code = "en"
             val locale = Locale(code)
             val config = Configuration(base.resources.configuration)
 
-            // 设置语言配置
+            // Set language configuration
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 val localeList = LocaleList(locale)
                 LocaleList.setDefault(localeList)
@@ -188,12 +176,12 @@ class OperitApplication : Application() {
                 Locale.setDefault(locale)
             }
 
-            // 使用createConfigurationContext创建新的上下文
+            // Create new context with configuration
             val context = base.createConfigurationContext(config)
             super.attachBaseContext(context)
-            Log.d(TAG, "成功应用基础上下文语言: $code")
+            Log.d(TAG, "Successfully applied base context language: $code")
         } catch (e: Exception) {
-            Log.e(TAG, "应用基础上下文语言失败", e)
+            Log.e(TAG, "Failed to apply base context language", e)
             super.attachBaseContext(base)
         }
     }

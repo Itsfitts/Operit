@@ -38,19 +38,8 @@ object LocaleUtils {
      * @return 当前语言代码，如zh、en
      */
     fun getCurrentLanguage(context: Context): String {
-        // 优先从全局初始化的preferencesManager获取
-        try {
-            // 使用更安全的方式检查preferencesManager是否已初始化
-            val manager = runCatching { preferencesManager }.getOrNull()
-            if (manager != null) {
-                return manager.getCurrentLanguage()
-            }
-        } catch (e: Exception) {
-            // 错误时静默处理
-        }
-
-        // 如果无法获取，则从系统中获取
-        return getCurrentSystemLanguage(context)
+        // Always return English as the default language
+        return "en"
     }
 
     /** 获取系统当前语言 */
@@ -71,20 +60,8 @@ object LocaleUtils {
      * @param languageCode 语言代码，如zh、en
      */
     fun setAppLanguage(context: Context, languageCode: String) {
-        val locale = Locale(languageCode)
-        
-        // 保存到偏好设置 - 只使用全局已初始化的实例
-        try {
-            // 使用更安全的方式检查preferencesManager是否已初始化
-            val manager = runCatching { preferencesManager }.getOrNull()
-            if (manager != null) {
-                runBlocking(Dispatchers.IO) {
-                    manager.saveAppLanguage(languageCode)
-                }
-            }
-        } catch (e: Exception) {
-            // 错误时静默处理
-        }
+        // Always use English regardless of the passed languageCode
+        val locale = Locale("en")
         
         // 设置默认语言
         Locale.setDefault(locale)

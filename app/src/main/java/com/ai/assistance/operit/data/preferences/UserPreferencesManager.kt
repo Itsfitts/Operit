@@ -82,7 +82,7 @@ class UserPreferencesManager(private val context: Context) {
         const val MEDIA_TYPE_VIDEO = "video"
         
         // 默认语言
-        const val DEFAULT_LANGUAGE = "zh"
+        const val DEFAULT_LANGUAGE = "en"
     }
 
     // 获取应用语言设置

@@ -68,12 +68,12 @@ class MainActivity : ComponentActivity() {
     private var initialChecksDone = false
 
     override fun attachBaseContext(newBase: Context) {
-        // 获取当前设置的语言
-        val code = LocaleUtils.getCurrentLanguage(newBase)
+        // Always use English
+        val code = "en"
         val locale = Locale(code)
         val config = Configuration(newBase.resources.configuration)
 
-        // 设置语言配置
+        // Set language configuration
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val localeList = LocaleList(locale)
             LocaleList.setDefault(localeList)
@@ -83,10 +83,10 @@ class MainActivity : ComponentActivity() {
             Locale.setDefault(locale)
         }
 
-        // 使用createConfigurationContext创建新的本地化上下文
+        // Create new localized context
         val context = newBase.createConfigurationContext(config)
         super.attachBaseContext(context)
-        Log.d(TAG, "MainActivity应用语言设置: $code")
+        Log.d(TAG, "MainActivity language set to: $code")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
